@@ -1,0 +1,154 @@
+PHASE-AWARE GPU BANK MAPPING
+FINAL VALIDATION RESULTS
+
+============================================================
+PROJECT
+============================================================
+
+Title:
+A Phase-Aware Adaptive Bank Mapping Approach for Reducing
+GPU Shared Memory Bank Conflicts
+
+Final validation script:
+realism_validation.py
+
+Evaluation type:
+Simulation / trace-based conflict-cost evaluation
+
+Shared-memory model:
+32 banks
+32 threads per warp
+
+Mappings evaluated:
+- Normal
+- XOR-A
+- XOR-B
+
+Controllers compared:
+- Best Static Mapping
+- Unrestricted Adaptive
+- Lifetime-Safe Adaptive
+
+Important:
+These results are conflict-cost measurements.
+They are NOT GPU execution-time measurements and are NOT
+hardware-captured NVIDIA traces.
+
+============================================================
+FINAL BENCHMARK RESULTS
+============================================================
+
+Benchmark                Best Static    Unrestricted Adaptive    Lifetime-Safe Adaptive
+---------------------------------------------------------------------------------------
+Matrix Transpose         128            128                      128
+Parallel Reduction       768            768                      768
+Prefix Scan              1536           1536                     1536
+Phase-Mixed              3296           2353                     1559
+
+============================================================
+PHASE-MIXED RESULT
+============================================================
+
+Best Static Cost:
+3296
+
+Unrestricted Adaptive Cost:
+2353
+
+Lifetime-Safe Adaptive Cost:
+1559
+
+Lifetime-Safe Adaptive improvement vs Best Static:
+
+(3296 - 1559) / 3296 * 100
+= 52.70%
+
+Final reported improvement:
+52.70% conflict-cost reduction
+
+============================================================
+CORRECTNESS
+============================================================
+
+Unsafe remapping attempts:
+0
+
+The lifetime-safe controller only permits mapping changes at
+safe shared-memory lifetime boundaries.
+
+If a requested mapping change cannot be applied immediately,
+the request is deferred and revalidated at the next safe boundary.
+
+============================================================
+BENCHMARK NOTES
+============================================================
+
+Matrix Transpose
+- Kernel-derived algorithmic trace
+- Adaptive controllers match the best static mapping
+
+Parallel Reduction
+- Kernel-derived algorithmic trace
+- Adaptive controllers match the best static mapping
+
+Prefix Scan
+- Kernel-derived algorithmic trace
+- Adaptive controllers match the best static mapping
+
+Phase-Mixed
+- Synthetic stress benchmark
+- Built from realistic shared-memory stride motifs
+- Designed to test changing access patterns across phases
+- Produces the strongest adaptive improvement in the final validation
+
+============================================================
+FINAL INTERPRETATION
+============================================================
+
+The adaptive controller provides the most benefit when the
+shared-memory access pattern changes across phases.
+
+When one static mapping is already optimal for the complete
+workload, the adaptive controller mainly avoids unnecessary
+mapping changes and matches the best static result.
+
+The lifetime-safe controller demonstrates that adaptive mapping
+can still reduce conflict cost while restricting remapping to
+safe data-lifetime boundaries.
+
+============================================================
+DEVELOPMENT SUMMARY
+============================================================
+
+The final design was developed through 35 iterative experiments.
+
+The experiments covered:
+- history-based control
+- future lookahead
+- hybrid mapping selection
+- controller stability
+- switching thresholds
+- minimum hold time
+- causal watchdog
+- emergency switching
+- recovery lock
+- switch-cost analysis
+- safe remapping
+- data-lifetime boundaries
+- deferred switching
+- boundary revalidation
+- correctness checking
+
+============================================================
+REPORTING NOTE
+============================================================
+
+The final results must be described as:
+
+"Simulated shared-memory conflict-cost results using synthetic
+and kernel-derived address traces."
+
+Do not describe the results as:
+- real GPU execution-time speedups
+- hardware-measured performance gains
+- hardware-captured NVIDIA traces
