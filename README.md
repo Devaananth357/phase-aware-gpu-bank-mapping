@@ -15,7 +15,7 @@ The final design combines phase-aware mapping selection with **safe data-lifetim
 The complete research paper is available in:
 
 ```text
-paper/conference-Paper.pdf
+paper/Phase-Aware_Adaptive_GPU_Bank_Mapping.pdf
 ```
 
 ---
